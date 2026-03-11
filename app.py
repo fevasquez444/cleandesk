@@ -49,6 +49,32 @@ def nuevo_cliente():
         return redirect(url_for('index'))
     return render_template('cliente_form.html', form=form)
 
+# RUTA PARA EDITAR CLIENTE (NUEVA)
+@app.route('/clientes/editar/<int:id>', methods=['GET', 'POST'])
+def editar_cliente(id):
+    # Buscar el cliente por ID o mostrar 404 si no existe
+    cliente = Cliente.query.get_or_404(id)
+    
+    # Crear el formulario y cargar los datos del cliente
+    form = ClientForm(obj=cliente)
+    
+    if form.validate_on_submit():
+        # Actualizar los campos del cliente con los datos del formulario
+        form.populate_obj(cliente)
+        db.session.commit()
+        return redirect(url_for('listar_clientes'))
+    
+    return render_template('cliente_form.html', form=form, editar=True, cliente=cliente)
+
+# RUTA PARA ELIMINAR CLIENTE (NUEVA)
+@app.route('/clientes/eliminar/<int:id>')
+def eliminar_cliente(id):
+    cliente = Cliente.query.get_or_404(id)
+    db.session.delete(cliente)
+    db.session.commit()
+    return redirect(url_for('listar_clientes'))
+
+
 # RUTA PARA LISTAR CLIENTES (NUEVA)
 @app.route('/clientes')
 def listar_clientes():

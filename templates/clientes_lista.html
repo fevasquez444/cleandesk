@@ -31,34 +31,44 @@
         tr:hover {
             background-color: #ddd;
         }
-        a {
-            text-decoration: none;
-            color: #4CAF50;
-            font-weight: bold;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
         .btn {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 6px 12px;
+            text-decoration: none;
+            border-radius: 3px;
+            margin: 2px;
+            font-size: 14px;
+        }
+        .btn-edit {
+            background-color: #2196F3;
+            color: white;
+        }
+        .btn-edit:hover {
+            background-color: #0b7dda;
+        }
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-delete:hover {
+            background-color: #da190b;
+        }
+        .btn-add {
             background-color: #4CAF50;
             color: white;
-            text-decoration: none;
+            padding: 10px 20px;
             border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .btn:hover {
-            background-color: #45a049;
             text-decoration: none;
-            color: white;
+        }
+        .btn-add:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
     <h1>📋 Lista de Clientes</h1>
     
-    <a href="{{ url_for('nuevo_cliente') }}" class="btn">➕ Registrar Nuevo Cliente</a>
+    <a href="{{ url_for('nuevo_cliente') }}" class="btn-add">➕ Registrar Nuevo Cliente</a>
     
     <table>
         <thead>
@@ -69,6 +79,7 @@
                 <th>Teléfono</th>
                 <th>Dirección</th>
                 <th>Fecha Registro</th>
+                <th>Acciones</th>  <!-- NUEVA COLUMNA -->
             </tr>
         </thead>
         <tbody>
@@ -80,10 +91,16 @@
                 <td>{{ cliente.telefono or '—' }}</td>
                 <td>{{ cliente.direccion or '—' }}</td>
                 <td>{{ cliente.fecha_registro.strftime('%d/%m/%Y') }}</td>
+                <td>
+                    <a href="{{ url_for('editar_cliente', id=cliente.id) }}" class="btn btn-edit">✏️ Editar</a>
+                    <a href="{{ url_for('eliminar_cliente', id=cliente.id) }}" 
+                       class="btn btn-delete"
+                       onclick="return confirm('¿Estás seguro de eliminar este cliente?')">🗑️ Eliminar</a>
+                </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="6" style="text-align: center; padding: 20px;">
+                <td colspan="7" style="text-align: center; padding: 20px;">  <!-- Cambiado a 7 columnas -->
                     No hay clientes registrados aún.<br>
                     <a href="{{ url_for('nuevo_cliente') }}">¡Registra el primer cliente!</a>
                 </td>
@@ -94,5 +111,16 @@
     
     <br>
     <a href="{{ url_for('index') }}">← Volver al inicio</a>
+    
+    <script>
+        // Confirmación para eliminar
+        document.querySelectorAll('.btn-delete').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('¿Estás seguro de eliminar este cliente?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
