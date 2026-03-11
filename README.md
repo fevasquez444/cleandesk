@@ -97,7 +97,18 @@ GitHub: @fevasquez444
 License
 This project is for educational purposes as part of my Full Stack Web Development learning journey.
 
+
+Early stage of developement Snapshots
+
 <img width="1862" height="1122" alt="Screenshot from 2026-03-11 15-50-27" src="https://github.com/user-attachments/assets/3d49da2a-98b4-4e60-b35d-a7d5171b1571" />
 <img width="1862" height="1122" alt="Screenshot from 2026-03-11 15-50-22" src="https://github.com/user-attachments/assets/761566cb-1e94-4aa1-98da-cc73865d0f52" />
 <img width="1862" height="1122" alt="Screenshot from 2026-03-11 15-50-15" src="https://github.com/user-attachments/assets/c1543b1f-8b1b-4283-aaad-0df9cc34a09e" />
+
+Second stage of developement Snapshots
+
+
+<img width="1862" height="1122" alt="Screenshot from 2026-03-11 17-11-44" src="https://github.com/user-attachments/assets/f0b8b85a-9ec4-4c7d-a968-7708fe24a7d5" />
+<img width="1862" height="1122" alt="Screenshot from 2026-03-11 17-11-39" src="https://github.com/user-attachments/assets/5a4bd754-958c-4ed4-9970-0ceec3c52a8e" />
+<img width="1862" height="1122" alt="Screenshot from 2026-03-11 17-11-31" src="https://github.com/user-attachments/assets/010f3606-8c4f-4416-a415-68679430972a" />
+
 
