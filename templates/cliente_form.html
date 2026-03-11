@@ -1,60 +1,60 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CleanDesk - {% if editar %}Editar{% else %}Nuevo{% endif %} Cliente</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .btn { padding: 10px 20px; background-color: #4CAF50; color: white; 
-               text-decoration: none; border-radius: 5px; border: none; cursor: pointer; }
-        .btn:hover { background-color: #45a049; }
-        .btn-cancel { background-color: #f44336; }
-        .btn-cancel:hover { background-color: #da190b; }
-        input[type=text] { width: 300px; padding: 8px; margin: 5px 0; }
-    </style>
-</head>
-<body>
-    <h1>{% if editar %}Editar{% else %}Registrar Nuevo{% endif %} Cliente</h1>
-    
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        
-        <p>
-            {{ form.nombre.label }}<br>
-            {{ form.nombre(size=40) }}
-            {% if form.nombre.errors %}
-                <br><span style="color: red;">{{ form.nombre.errors[0] }}</span>
-            {% endif %}
-        </p>
-        
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=40) }}
-            {% if form.email.errors %}
-                <br><span style="color: red;">{{ form.email.errors[0] }}</span>
-            {% endif %}
-        </p>
-        
-        <p>
-            {{ form.telefono.label }}<br>
-            {{ form.telefono(size=40) }}
-        </p>
-        
-        <p>
-            {{ form.direccion.label }}<br>
-            {{ form.direccion(size=40) }}
-        </p>
-        
-        <p>
-            {{ form.submit(class="btn", value="Guardar Cambios" if editar else "Guardar Cliente") }}
-            {% if editar %}
-                <a href="{{ url_for('listar_clientes') }}" class="btn btn-cancel">Cancelar</a>
-            {% endif %}
-        </p>
-    </form>
-    
-    <br>
-    <a href="{{ url_for('listar_clientes') }}">← Volver a la lista</a>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}{% if editar %}Editar{% else %}Nuevo{% endif %} Cliente{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0">
+                    <i class="bi bi-person-{% if editar %}gear{% else %}plus{% endif %}"></i>
+                    {% if editar %}Editar{% else %}Registrar Nuevo{% endif %} Cliente
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.nombre.label(class="form-label fw-bold") }}
+                        {{ form.nombre(class="form-control" + (" is-invalid" if form.nombre.errors else "")) }}
+                        {% if form.nombre.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.nombre.errors[0] }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label fw-bold") }}
+                        {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.email.errors[0] }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.telefono.label(class="form-label fw-bold") }}
+                        {{ form.telefono(class="form-control") }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.direccion.label(class="form-label fw-bold") }}
+                        {{ form.direccion(class="form-control") }}
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('listar_clientes') }}" class="btn btn-secondary me-md-2">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        {{ form.submit(class="btn btn-success") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

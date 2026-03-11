@@ -1,18 +1,32 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CleanDesk - Inicio</title>
-</head>
-<body>
-    <h1>¡Bienvenido a CleanDesk!</h1>
-    <p>Sistema de gestión para empresas de limpieza</p>
-    <p>Si ves esto, todo está funcionando correctamente. 🎉</p>
-        <!-- NUEVO ENLACE -->
-    <br>
-    <a href="{{ url_for('nuevo_cliente') }}">Registrar nuevo cliente</a>
-        <br>
-    <a href="{{ url_for('listar_clientes') }}">Ver lista de clientes</a>  <!-- NUEVA LÍNEA -->
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 text-center">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-building"></i> CleanDesk
+                </h2>
+            </div>
+            <div class="card-body p-5">
+                <h1 class="display-4 mb-4">¡Bienvenido a CleanDesk!</h1>
+                <p class="lead">Sistema de gestión para empresas de limpieza</p>
+                <hr class="my-4">
+                <p>Gestiona tus clientes de manera eficiente y profesional.</p>
+                
+                <div class="d-grid gap-3 col-6 mx-auto mt-4">
+                    <a href="{{ url_for('nuevo_cliente') }}" class="btn btn-success btn-lg">
+                        <i class="bi bi-person-plus"></i> Registrar nuevo cliente
+                    </a>
+                    <a href="{{ url_for('listar_clientes') }}" class="btn btn-outline-success btn-lg">
+                        <i class="bi bi-people"></i> Ver lista de clientes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
