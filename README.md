@@ -95,5 +95,7 @@ Author
 Fernando Vasquez
 GitHub: @fevasquez444
 License
-
 This project is for educational purposes as part of my Full Stack Web Development learning journey.
+
+
+<img width="1920" height="1200" alt="Screenshot from 2026-03-11 15-06-44" src="https://github.com/user-attachments/assets/18ae558d-6565-4554-afcb-2d0990354f40" />
