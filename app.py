@@ -1,8 +1,9 @@
-from flask import Flask, render_template, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy  # ¡CORREGIDO!
+from flask import Flask, render_template, redirect, url_for, flash, request
+from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from forms import ClientForm
-from services_forms import ServicioForm  # <-- Agrega esto al principio con las otras importaciones
+from services_forms import ServicioForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'clave-secreta-cambia-me-en-produccion'
@@ -16,6 +17,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Inicializar extensiones
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
+
+# Configuración de Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'  # La vista a la que redirige si no está autenticado
+login_manager.login_message = 'Por favor, inicia sesión para acceder a esta página.'
+login_manager.login_message_category = 'info'
 
 
 # MODELO DE DATOS (esto estaba faltando)
@@ -70,6 +79,27 @@ class Servicio(db.Model):
     def __repr__(self):
         return f'<Servicio {self.nombre}>'
     
+# MODELO DE DATOS PARA USUARIO (NUEVO)
+class Usuario(UserMixin, db.Model):
+    __tablename__ = 'usuarios'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    nombre_completo = db.Column(db.String(100))
+    rol = db.Column(db.String(20), default='empleado')  # 'admin' o 'empleado'
+    activo = db.Column(db.Boolean, default=True)
+    fecha_registro = db.Column(db.DateTime, default=db.func.current_timestamp())
+    
+    def __repr__(self):
+        return f'<Usuario {self.username}>'
+
+# RUTA PARA LOGIN DE USUARIO
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.get(Usuario, int(user_id))
+
 
 # RUTA PARA EDITAR CLIENTE (NUEVA)
 @app.route('/clientes/editar/<int:id>', methods=['GET', 'POST'])
@@ -150,6 +180,77 @@ def eliminar_servicio(id):
     db.session.delete(servicio)
     db.session.commit()
     return redirect(url_for('listar_servicios'))
+
+
+# ===== RUTAS DE AUTENTICACIÓN =====
+
+# REGISTRO DE USUARIOS
+@app.route('/registro', methods=['GET', 'POST'])
+def registro():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        nombre_completo = request.form.get('nombre_completo')
+        
+        # Verificar si el usuario ya existe
+        usuario_existe = Usuario.query.filter_by(username=username).first()
+        email_existe = Usuario.query.filter_by(email=email).first()
+        
+        if usuario_existe:
+            flash('El nombre de usuario ya existe', 'danger')
+        elif email_existe:
+            flash('El email ya está registrado', 'danger')
+        else:
+            # Crear nuevo usuario (sin hash aún, después implementaremos)
+            nuevo_usuario = Usuario(
+                username=username,
+                email=email,
+                password=password,  # TEMPORAL: después agregaremos hash
+                nombre_completo=nombre_completo,
+                rol='empleado'
+            )
+            db.session.add(nuevo_usuario)
+            db.session.commit()
+            flash('Usuario registrado correctamente. Ahora puedes iniciar sesión.', 'success')
+            return redirect(url_for('login'))
+    
+    return render_template('registro.html')
+
+
+# LOGIN DE USUARIOS
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        usuario = Usuario.query.filter_by(username=username).first()
+        
+        if usuario and usuario.password == password:  # TEMPORAL: después mejoraremos
+            login_user(usuario)
+            flash(f'Bienvenido, {usuario.nombre_completo or usuario.username}!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Usuario o contraseña incorrectos', 'danger')
+    
+    return render_template('login.html')
+
+
+# LOGOUT
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Has cerrado sesión correctamente', 'info')
+    return redirect(url_for('index'))
+
+
+# PERFIL DE USUARIO
+@app.route('/perfil')
+@login_required
+def perfil():
+    return render_template('perfil.html', usuario=current_user)
 
 
 if __name__ == '__main__':
