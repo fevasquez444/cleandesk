@@ -2,7 +2,8 @@ from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
-from flask_bcrypt import Bcrypt  # <--- NUEVA LÍNEA AGREGADA
+from flask_bcrypt import Bcrypt 
+from functools import wraps # <--- NUEVA LÍNEA AGREGADA
 from forms import ClientForm
 from services_forms import ServicioForm
 
@@ -27,8 +28,24 @@ login_manager.login_view = 'login'  # La vista a la que redirige si no está aut
 login_manager.login_message = 'Por favor, inicia sesión para acceder a esta página.'
 login_manager.login_message_category = 'info'
 
+
 # Inicializar Bcrypt
 bcrypt = Bcrypt(app)
+
+
+# ===== DECORADOR PARA VERIFICAR SI EL USUARIO ES ADMIN =====
+from functools import wraps
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.rol != 'admin':
+            flash('Acceso denegado. Se requieren permisos de administrador.', 'danger')
+            return redirect(url_for('index'))
+        return f(*args, **kwargs)
+    return decorated_function
+# ===== FIN DEL DECORADOR =====
+
 
 # MODELO DE DATOS (esto estaba faltando)
 class Cliente(db.Model):
@@ -53,6 +70,7 @@ def index():
 
 # RUTA PARA NUEVO CLIENTE
 @app.route('/clientes/nuevo', methods=['GET', 'POST'])
+@login_required  # <--- NUEVA LÍNEA AGREGADA AQUÍ
 def nuevo_cliente():
     form = ClientForm()
     if form.validate_on_submit():
@@ -115,6 +133,7 @@ def load_user(user_id):
 
 # RUTA PARA EDITAR CLIENTE (NUEVA)
 @app.route('/clientes/editar/<int:id>', methods=['GET', 'POST'])
+@login_required  # <--- NUEVA LÍNEA AGREGADA AQUÍ
 def editar_cliente(id):
     # Buscar el cliente por ID o mostrar 404 si no existe
     cliente = Cliente.query.get_or_404(id)
@@ -133,6 +152,7 @@ def editar_cliente(id):
 
 # RUTA PARA ELIMINAR CLIENTE (NUEVA)
 @app.route('/clientes/eliminar/<int:id>')
+@login_required  # <--- NUEVA LÍNEA AGREGADA AQUÍ
 def eliminar_cliente(id):
     cliente = Cliente.query.get_or_404(id)
     db.session.delete(cliente)
@@ -142,6 +162,7 @@ def eliminar_cliente(id):
 
 # RUTA PARA LISTAR CLIENTES (NUEVA)
 @app.route('/clientes')
+@login_required  # <--- NUEVA LÍNEA AGREGADA AQUÍ
 def listar_clientes():
     clientes = Cliente.query.all()
     return render_template('clientes_lista.html', clientes=clientes)
@@ -152,6 +173,7 @@ from services_forms import ServicioForm  # <-- Agrega esto al principio con las 
 
 # LISTA TODOS LOS SERVICIOS
 @app.route('/servicios')
+@login_required  # <--- NUEVA LÍNEA AGREGADA AQUÍ
 def listar_servicios():
     servicios = Servicio.query.all()
     return render_template('servicios_lista.html', servicios=servicios)
@@ -159,6 +181,7 @@ def listar_servicios():
 
 # CREAR UN NUEVO SERVICIO
 @app.route('/servicios/nuevo', methods=['GET', 'POST'])
+@login_required  # <--- NUEVA LÍNEA AGREGADA AQUÍ
 def nuevo_servicio():
     form = ServicioForm()
     if form.validate_on_submit():
@@ -176,6 +199,7 @@ def nuevo_servicio():
 
 # EDITAR UN SERVICIO
 @app.route('/servicios/editar/<int:id>', methods=['GET', 'POST'])
+@login_required  # <--- NUEVA LÍNEA AGREGADA AQUÍ
 def editar_servicio(id):
     servicio = Servicio.query.get_or_404(id)
     form = ServicioForm(obj=servicio)
@@ -190,6 +214,7 @@ def editar_servicio(id):
 
 # ELIMINAR UN SERVICIO
 @app.route('/servicios/eliminar/<int:id>')
+@login_required  # <--- NUEVA LÍNEA AGREGADA AQUÍ
 def eliminar_servicio(id):
     servicio = Servicio.query.get_or_404(id)
     db.session.delete(servicio)
@@ -222,7 +247,7 @@ def registro():
                 username=username,
                 email=email,
                 nombre_completo=nombre_completo,
-                rol='empleado'
+                rol='admin'
             )
             nuevo_usuario.set_password(password)  # <--- ESTO GENERA EL HASH
             db.session.add(nuevo_usuario)
@@ -267,6 +292,51 @@ def logout():
 def perfil():
     return render_template('perfil.html', usuario=current_user)
 
+# ===== ADMINISTRACIÓN DE USUARIOS =====
+
+@app.route('/usuarios')
+@login_required
+@admin_required
+def listar_usuarios():
+    usuarios = Usuario.query.all()
+    return render_template('usuarios_lista.html', usuarios=usuarios)
+
+@app.route('/usuarios/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def editar_usuario(id):
+    usuario = Usuario.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        usuario.username = request.form.get('username')
+        usuario.email = request.form.get('email')
+        usuario.nombre_completo = request.form.get('nombre_completo')
+        usuario.rol = request.form.get('rol')
+        
+        nueva_password = request.form.get('password')
+        if nueva_password:
+            usuario.set_password(nueva_password)
+        
+        db.session.commit()
+        flash(f'Usuario {usuario.username} actualizado correctamente', 'success')
+        return redirect(url_for('listar_usuarios'))
+    
+    return render_template('usuario_form.html', usuario=usuario, editar=True)
+
+@app.route('/usuarios/eliminar/<int:id>')
+@login_required
+@admin_required
+def eliminar_usuario(id):
+    usuario = Usuario.query.get_or_404(id)
+    
+    if usuario.id == current_user.id:
+        flash('No puedes eliminar tu propio usuario', 'danger')
+        return redirect(url_for('listar_usuarios'))
+    
+    db.session.delete(usuario)
+    db.session.commit()
+    flash(f'Usuario {usuario.username} eliminado', 'success')
+    return redirect(url_for('listar_usuarios'))
 
 if __name__ == '__main__':
     app.run(debug=True)
