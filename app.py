@@ -1,3 +1,4 @@
+import os  # <-- Asegúrate de que esta línea esté al principio con las otras importaciones
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -7,8 +8,9 @@ from functools import wraps # <--- NUEVA LÍNEA AGREGADA
 from forms import ClientForm
 from services_forms import ServicioForm
 
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'clave-secreta-cambia-me-en-produccion'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'clave-secreta-por-defecto')
 
 
 # Configuración de la base de datos
