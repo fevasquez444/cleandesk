@@ -1,8 +1,8 @@
-"""Add user model for authentication
+"""Create usuarios table with password_hash
 
-Revision ID: 54896ed04b69
-Revises: a2cc3a80ca36
-Create Date: 2026-03-12 13:16:11.551692
+Revision ID: e82995f91b49
+Revises: 
+Create Date: 2026-03-13 11:35:39.818711
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '54896ed04b69'
-down_revision = 'a2cc3a80ca36'
+revision = 'e82995f91b49'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -22,7 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
-    sa.Column('password', sa.String(length=200), nullable=False),
+    sa.Column('password_hash', sa.String(length=200), nullable=False),
     sa.Column('nombre_completo', sa.String(length=100), nullable=True),
     sa.Column('rol', sa.String(length=20), nullable=True),
     sa.Column('activo', sa.Boolean(), nullable=True),

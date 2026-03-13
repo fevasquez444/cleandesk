@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_bcrypt import Bcrypt  # <--- NUEVA LÍNEA AGREGADA
 from forms import ClientForm
 from services_forms import ServicioForm
 
@@ -26,6 +27,8 @@ login_manager.login_view = 'login'  # La vista a la que redirige si no está aut
 login_manager.login_message = 'Por favor, inicia sesión para acceder a esta página.'
 login_manager.login_message_category = 'info'
 
+# Inicializar Bcrypt
+bcrypt = Bcrypt(app)
 
 # MODELO DE DATOS (esto estaba faltando)
 class Cliente(db.Model):
@@ -86,7 +89,7 @@ class Usuario(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
     nombre_completo = db.Column(db.String(100))
     rol = db.Column(db.String(20), default='empleado')  # 'admin' o 'empleado'
     activo = db.Column(db.Boolean, default=True)
@@ -94,6 +97,15 @@ class Usuario(UserMixin, db.Model):
     
     def __repr__(self):
         return f'<Usuario {self.username}>'
+    
+    def set_password(self, password):
+        """Genera el hash de la contraseña y lo guarda en password_hash"""
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    def check_password(self, password):
+        """Verifica si la contraseña coincide con el hash guardado"""
+        return bcrypt.check_password_hash(self.password_hash, password)
+
 
 # RUTA PARA LOGIN DE USUARIO
 @login_manager.user_loader
@@ -144,6 +156,7 @@ def listar_servicios():
     servicios = Servicio.query.all()
     return render_template('servicios_lista.html', servicios=servicios)
 
+
 # CREAR UN NUEVO SERVICIO
 @app.route('/servicios/nuevo', methods=['GET', 'POST'])
 def nuevo_servicio():
@@ -160,6 +173,7 @@ def nuevo_servicio():
         return redirect(url_for('listar_servicios'))
     return render_template('servicio_form.html', form=form, editar=False)
 
+
 # EDITAR UN SERVICIO
 @app.route('/servicios/editar/<int:id>', methods=['GET', 'POST'])
 def editar_servicio(id):
@@ -172,6 +186,7 @@ def editar_servicio(id):
         return redirect(url_for('listar_servicios'))
     
     return render_template('servicio_form.html', form=form, editar=True, servicio=servicio)
+
 
 # ELIMINAR UN SERVICIO
 @app.route('/servicios/eliminar/<int:id>')
@@ -202,14 +217,14 @@ def registro():
         elif email_existe:
             flash('El email ya está registrado', 'danger')
         else:
-            # Crear nuevo usuario (sin hash aún, después implementaremos)
+            # Crear nuevo usuario con contraseña hasheada
             nuevo_usuario = Usuario(
                 username=username,
                 email=email,
-                password=password,  # TEMPORAL: después agregaremos hash
                 nombre_completo=nombre_completo,
                 rol='empleado'
             )
+            nuevo_usuario.set_password(password)  # <--- ESTO GENERA EL HASH
             db.session.add(nuevo_usuario)
             db.session.commit()
             flash('Usuario registrado correctamente. Ahora puedes iniciar sesión.', 'success')
@@ -227,7 +242,7 @@ def login():
         
         usuario = Usuario.query.filter_by(username=username).first()
         
-        if usuario and usuario.password == password:  # TEMPORAL: después mejoraremos
+        if usuario and usuario.check_password(password):  # TEMPORAL: después mejoraremos
             login_user(usuario)
             flash(f'Bienvenido, {usuario.nombre_completo or usuario.username}!', 'success')
             return redirect(url_for('index'))
