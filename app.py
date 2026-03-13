@@ -65,7 +65,25 @@ class Cliente(db.Model):
 # RUTA PRINCIPAL (esto estaba faltando)
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Obtener estadísticas para el dashboard
+    total_clientes = Cliente.query.count()
+    total_servicios = Servicio.query.count()
+    total_usuarios = Usuario.query.count()
+    
+    # Contar admins y empleados
+    admins = Usuario.query.filter_by(rol='admin').count()
+    empleados = Usuario.query.filter_by(rol='empleado').count()
+    
+    # Últimos 5 clientes registrados
+    ultimos_clientes = Cliente.query.order_by(Cliente.fecha_registro.desc()).limit(5).all()
+    
+    return render_template('index.html', 
+                          total_clientes=total_clientes,
+                          total_servicios=total_servicios,
+                          total_usuarios=total_usuarios,
+                          admins=admins,
+                          empleados=empleados,
+                          ultimos_clientes=ultimos_clientes)
 
 
 # RUTA PARA NUEVO CLIENTE
