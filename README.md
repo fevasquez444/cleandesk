@@ -1,114 +1,121 @@
-# CleanDesk - Cleaning Company Management System
+# CleanDesk - CRM for Cleaning Services
 
-A CRM built with Flask for cleaning companies. Manage your clients efficiently with a clean and simple interface.
+CleanDesk is a web-based CRM (Customer Relationship Management) system built with Flask, designed to manage clients, services, and internal users for a cleaning company.
 
-## Features
+This project demonstrates backend architecture, authentication systems, role-based access control, and relational database design.
 
-- ✅ **Client Registration** - Add new clients with name, email, phone, and address
-- ✅ **Client Listing** - View all clients in a organized table
-- ✅ **Edit Clients** - Update client information
-- ✅ **Delete Clients** - Remove clients with confirmation
-- ✅ **Database Storage** - SQLite database for data persistence
-- ✅ **Form Validation** - Email format validation and required fields
+---
 
-## Tech Stack
+## 🚀 Features
 
-- **Backend:** Python 3.12, Flask 3.1
-- **Database:** SQLite, SQLAlchemy ORM, Flask-Migrate
-- **Forms:** Flask-WTF, WTForms
-- **Frontend:** HTML5, Jinja2 templating
-- **Version Control:** Git, GitHub
+### 🔐 Authentication & User Management
+- User registration and login system
+- Password hashing with Bcrypt
+- Role-based access control (Admin / Employee)
+- Protected routes using Flask-Login
 
-## Installation
+### 👥 Client Management
+- Create, edit, and delete clients
+- Store contact information (email, phone, address)
+- Track client registration dates
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/fevasquez444/cleandesk.git
-   cd cleandesk
+### 🧰 Service Management
+- Create and manage cleaning services
+- Define price and duration
+- Maintain service catalog
 
-2. **Create and activate virtual environment**
- 
-python3 -m venv venv
-source venv/bin/activate  # On Linux/Mac
-# or venv\Scripts\activate  # On Windows
+### 🔗 Client-Service Assignment
+- Assign multiple services to clients
+- Many-to-many relationship implementation
+- Prevent duplicate service assignments
+- Remove services from clients dynamically
 
-3. **Install dependencies**
+### 📊 Dashboard
+- Display total clients, services, and users
+- Show recent client activity
 
-pip install flask flask-sqlalchemy flask-migrate flask-wtf email-validator
+---
 
-4. **Set up the database**
+## 🛠 Tech Stack
 
-flask db init
-flask db migrate -m "Initial migration"
-flask db upgrade
+- Backend: Python 3.12, Flask
+- Database: SQLite, SQLAlchemy ORM
+- Migrations: Flask-Migrate (Alembic)
+- Authentication: Flask-Login, Bcrypt
+- Forms: Flask-WTF, WTForms
+- Frontend: HTML5, Jinja2
+- Version Control: Git & GitHub
 
-5. Run the application
+---
 
-python app.py
+## 📦 Installation
 
-6. **Usage**   
+1. Clone repository
 
- Open your browser and go to http://127.0.0.1:5000
+git clone https://github.com/fevasquez444/cleandesk.git  
+cd cleandesk  
 
+2. Create virtual environment
 
+python3 -m venv venv  
+source venv/bin/activate  
 
-    Home page - Start from the welcome screen
+3. Install dependencies
 
-    Register a client - Click "Registrar nuevo cliente" and fill the form
+pip install -r requirements.txt  
 
-    View all clients - Click "Ver lista de clientes" to see the table
+4. Setup database
 
-    Edit a client - Click the ✏️ Edit button next to any client
+flask db upgrade  
 
-    Delete a client - Click the 🗑️ Delete button (confirmation required)
+5. Run application
 
+python app.py  
 
-7 **Project Structure**
+---
+
+## 🧪 Usage
+
+- Access: http://127.0.0.1:5000
+- Register a new user
+- Login as admin
+- Create clients and services
+- Assign services to clients
+- Manage users (admin only)
+
+---
+
+## 📁 Project Structure (Current)
 
 cleandesk/
-├── app.py              # Main application file
-├── forms.py            # WTForms definitions
-├── models.py           # Database models
-├── requirements.txt    # Dependencies
-├── static/             # CSS, images, etc.
-├── templates/          # HTML templates
-│   ├── index.html
-│   ├── cliente_form.html
-│   └── clientes_lista.html
-├── migrations/         # Database migrations
-└── instance/           # SQLite database file
+├── app.py
+├── forms.py
+├── services_forms.py
+├── templates/
+├── migrations/
+├── instance/
+├── requirements.txt
 
-8 **Future Improvements**
+---
 
-    Add authentication system (login/logout)
+## 🔮 Future Improvements
 
-    Implement services catalog
+- Modular architecture (Blueprints)
+- API version (REST)
+- Search & filtering
+- Pagination
+- UI improvements (Bootstrap / Tailwind)
+- Deployment (Docker + Cloud)
 
-    Add search and filter functionality
+---
 
-    Improve UI with Bootstrap
+## 👨‍💻 Author
 
-    Deploy to production
+Fernando Vasquez  
+GitHub: https://github.com/fevasquez444
 
-Author
+---
 
-Fernando Vasquez
-GitHub: @fevasquez444
-License
-This project is for educational purposes as part of my Full Stack Web Development learning journey.
+## 📌 Notes
 
-
-Early stage of developement Snapshots
-
-<img width="1862" height="1122" alt="Screenshot from 2026-03-11 15-50-27" src="https://github.com/user-attachments/assets/3d49da2a-98b4-4e60-b35d-a7d5171b1571" />
-<img width="1862" height="1122" alt="Screenshot from 2026-03-11 15-50-22" src="https://github.com/user-attachments/assets/761566cb-1e94-4aa1-98da-cc73865d0f52" />
-<img width="1862" height="1122" alt="Screenshot from 2026-03-11 15-50-15" src="https://github.com/user-attachments/assets/c1543b1f-8b1b-4283-aaad-0df9cc34a09e" />
-
-Second stage of developement Snapshots
-
-
-<img width="1862" height="1122" alt="Screenshot from 2026-03-11 17-11-44" src="https://github.com/user-attachments/assets/f0b8b85a-9ec4-4c7d-a968-7708fe24a7d5" />
-<img width="1862" height="1122" alt="Screenshot from 2026-03-11 17-11-39" src="https://github.com/user-attachments/assets/5a4bd754-958c-4ed4-9970-0ceec3c52a8e" />
-<img width="1862" height="1122" alt="Screenshot from 2026-03-11 17-11-31" src="https://github.com/user-attachments/assets/010f3606-8c4f-4416-a415-68679430972a" />
-
-
+This project is part of my journey to become a full stack developer, focusing on building real-world backend systems with scalable architecture.
