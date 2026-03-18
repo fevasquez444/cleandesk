@@ -10,6 +10,7 @@ from routes.clientes import clientes_bp
 from routes.servicios import servicios_bp
 from routes.auth import auth_bp
 from routes.usuarios import usuarios_bp
+from routes.reportes import reportes_bp
 from forms.asignar_form import AsignarServicioForm
 
 from models.client import Cliente
@@ -37,6 +38,7 @@ app.register_blueprint(clientes_bp)
 app.register_blueprint(servicios_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(usuarios_bp)
+app.register_blueprint(reportes_bp)
 
 # ===== DECORADOR PARA VERIFICAR SI EL USUARIO ES ADMIN =====
 
@@ -73,53 +75,12 @@ def index():
                           admins=admins,
                           empleados=empleados,
                           ultimos_clientes=ultimos_clientes)
-    
-    
-# ===== TABLA INTERMEDIA (NUEVA) =====
-cliente_servicio = db.Table('cliente_servicio',
-    db.Column('cliente_id', db.Integer, db.ForeignKey('clientes.id'), primary_key=True),
-    db.Column('servicio_id', db.Integer, db.ForeignKey('servicios.id'), primary_key=True),
-    db.Column('fecha_asignacion', db.DateTime, default=db.func.current_timestamp())
-)
 
 
 # RUTA PARA LOGIN DE USUARIO
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(Usuario, int(user_id))
-
-
-# ===== RUTAS PARA REPORTES Y ESTADÍSTICAS =====
-
-@app.route('/reportes')
-@login_required
-def reportes():
-    # 1. Servicios más contratados (top 5)
-    servicios_populares = db.session.query(
-        Servicio.nombre,
-        db.func.count(cliente_servicio.c.servicio_id).label('total')
-    ).join(cliente_servicio).group_by(Servicio.id).order_by(db.desc('total')).limit(5).all()
-    
-    # 2. Clientes con más servicios (top 5)
-    clientes_top = db.session.query(
-        Cliente.nombre,
-        Cliente.email,
-        db.func.count(cliente_servicio.c.cliente_id).label('total_servicios')
-    ).join(cliente_servicio).group_by(Cliente.id).order_by(db.desc('total_servicios')).limit(5).all()
-    
-    # 3. Ingresos totales (suma de precios de todos los servicios asignados)
-    ingresos_totales = db.session.query(
-        db.func.sum(Servicio.precio)
-    ).join(cliente_servicio).scalar() or 0
-    
-    # 4. Total de asignaciones
-    total_asignaciones = db.session.query(cliente_servicio).count()
-    
-    return render_template('reportes.html',
-                          servicios_populares=servicios_populares,
-                          clientes_top=clientes_top,
-                          ingresos_totales=ingresos_totales,
-                          total_asignaciones=total_asignaciones)
     
     
 if __name__ == '__main__':
