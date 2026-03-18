@@ -1,8 +1,16 @@
 # CleanDesk - CRM for Cleaning Services
 
-CleanDesk is a web-based CRM (Customer Relationship Management) system built with Flask, designed to manage clients, services, and internal users for a cleaning company.
+CleanDesk is a web-based CRM (Customer Relationship Management) system built with Flask, designed to manage clients, services, and internal users for a cleaning business.
 
-This project demonstrates backend architecture, authentication systems, role-based access control, and relational database design.
+This project is part of my journey learning full-stack development. I built it to practice backend development, CRUD operations, authentication, database management, and real-world application structure using Flask.
+
+---
+
+## 📌 Project Status
+
+This is an educational project in active development.
+
+I am continuously improving it while learning backend and full-stack concepts, focusing on building real and functional systems rather than just tutorials.
 
 ---
 
@@ -28,94 +36,192 @@ This project demonstrates backend architecture, authentication systems, role-bas
 - Assign multiple services to clients
 - Many-to-many relationship implementation
 - Prevent duplicate service assignments
-- Remove services from clients dynamically
+- Remove services dynamically
 
 ### 📊 Dashboard
 - Display total clients, services, and users
 - Show recent client activity
+- Basic reports and statistics section
 
 ---
 
-## 🛠 Tech Stack
+## 🛠️ Tech Stack
 
-- Backend: Python 3.12, Flask
-- Database: SQLite, SQLAlchemy ORM
-- Migrations: Flask-Migrate (Alembic)
-- Authentication: Flask-Login, Bcrypt
-- Forms: Flask-WTF, WTForms
-- Frontend: HTML5, Jinja2
-- Version Control: Git & GitHub
+- Python 3
+- Flask
+- Flask-SQLAlchemy
+- Flask-Migrate
+- Flask-Login
+- Flask-Bcrypt
+- Flask-WTF / WTForms
+- SQLite
+- HTML / Jinja2
+- Git & GitHub
+
+---
+
+## 📚 Dependencies
+
+This project uses the following main dependencies:
+
+- `Flask`
+- `Flask-SQLAlchemy`
+- `Flask-Migrate`
+- `Flask-Login`
+- `Flask-Bcrypt`
+- `Flask-WTF`
+- `WTForms`
+- `SQLAlchemy`
+- `Jinja2`
+
+All dependencies are listed in:
+
+```text
+requirements.txt
+```
+
+---
+
+## 🧠 What I Practiced in This Project
+
+This project helped me practice:
+
+- Building routes and views with Flask
+- Designing database models
+- Creating and validating forms
+- Implementing authentication and session handling
+- Using role-based permissions
+- Organizing a growing project structure
+- Working with Git and GitHub while learning development workflows
+
+---
+
+## 🖼️ Screenshots
+
+_Add screenshots here showing:_
+- Dashboard
+- Client list
+- Services list
+- Login screen
+- Reports page
 
 ---
 
 ## 📦 Installation
 
-1. Clone repository
+### 1. Clone the repository
 
-git clone https://github.com/fevasquez444/cleandesk.git  
-cd cleandesk  
+```bash
+git clone https://github.com/fevasquez444/cleandesk.git
+cd cleandesk
+```
 
-2. Create virtual environment
+### 2. Create virtual environment
 
-python3 -m venv venv  
-source venv/bin/activate  
+#### Linux / Mac
 
-3. Install dependencies
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
-pip install -r requirements.txt  
+#### Windows
 
-4. Setup database
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
 
-flask db upgrade  
+### 3. Install dependencies
 
-5. Run application
+```bash
+pip install -r requirements.txt
+```
 
-python app.py  
+### 4. Set environment variable
+
+#### Linux / Mac
+
+```bash
+export SECRET_KEY="your-secret-key"
+```
+
+#### Windows PowerShell
+
+```powershell
+$env:SECRET_KEY="your-secret-key"
+```
+
+### 5. Run migrations
+
+```bash
+flask db upgrade
+```
+
+### 6. Run the app
+
+```bash
+python app.py
+```
+
+Then open:
+
+```text
+http://127.0.0.1:5000
+```
 
 ---
 
 ## 🧪 Usage
 
-- Access: http://127.0.0.1:5000
+- Access the application in the browser
 - Register a new user
-- Login as admin
-- Create clients and services
+- Login with your account
+- Create clients
+- Create services
 - Assign services to clients
-- Manage users (admin only)
+- Manage users if logged in as admin
+- Review dashboard and reports
 
 ---
 
-## 📁 Project Structure (Current)
+## 📁 Project Structure
 
+```text
 cleandesk/
 ├── app.py
 ├── forms.py
 ├── services_forms.py
+├── requirements.txt
 ├── templates/
 ├── migrations/
 ├── instance/
-├── requirements.txt
+└── README.md
+```
 
 ---
 
 ## 🔮 Future Improvements
 
-- Modular architecture (Blueprints)
-- API version (REST)
-- Search & filtering
-- Pagination
-- UI improvements (Bootstrap / Tailwind)
-- Deployment (Docker + Cloud)
+- Search and filters
+- Better dashboard metrics
+- Improved UI styling
+- Form error feedback improvements
+- Deployment
+- Better project modularization (Blueprints / separate models)
 
 ---
 
 ## 👨‍💻 Author
 
-Fernando Vasquez  
-GitHub: https://github.com/fevasquez444
+Fernando Vasquez
+
+- GitHub: [@fevasquez444](https://github.com/fevasquez444)
 
 ---
 
-## 📌 Notes
+## 📌 Note
 
-This project is part of my journey to become a full stack developer, focusing on building real-world backend systems with scalable architecture.
+This repository is part of my learning process as a future full-stack developer.
+
+I focus on building real practice projects while improving my programming fundamentals.
