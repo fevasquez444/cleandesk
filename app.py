@@ -9,6 +9,7 @@ from extensions import db, bcrypt, login_manager
 from routes.clientes import clientes_bp
 from routes.servicios import servicios_bp
 from routes.auth import auth_bp
+from routes.usuarios import usuarios_bp
 from forms.asignar_form import AsignarServicioForm
 
 from models.client import Cliente
@@ -35,6 +36,7 @@ bcrypt.init_app(app)
 app.register_blueprint(clientes_bp)
 app.register_blueprint(servicios_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(usuarios_bp)
 
 # ===== DECORADOR PARA VERIFICAR SI EL USUARIO ES ADMIN =====
 
@@ -85,53 +87,6 @@ cliente_servicio = db.Table('cliente_servicio',
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(Usuario, int(user_id))
-
-
-# ===== ADMINISTRACIÓN DE USUARIOS =====
-
-@app.route('/usuarios')
-@login_required
-@admin_required
-def listar_usuarios():
-    usuarios = Usuario.query.all()
-    return render_template('usuarios_lista.html', usuarios=usuarios)
-
-@app.route('/usuarios/editar/<int:id>', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def editar_usuario(id):
-    usuario = Usuario.query.get_or_404(id)
-    
-    if request.method == 'POST':
-        usuario.username = request.form.get('username')
-        usuario.email = request.form.get('email')
-        usuario.nombre_completo = request.form.get('nombre_completo')
-        usuario.rol = request.form.get('rol')
-        
-        nueva_password = request.form.get('password')
-        if nueva_password:
-            usuario.set_password(nueva_password)
-        
-        db.session.commit()
-        flash(f'Usuario {usuario.username} actualizado correctamente', 'success')
-        return redirect(url_for('listar_usuarios'))
-    
-    return render_template('usuario_form.html', usuario=usuario, editar=True)
-
-@app.route('/usuarios/eliminar/<int:id>')
-@login_required
-@admin_required
-def eliminar_usuario(id):
-    usuario = Usuario.query.get_or_404(id)
-    
-    if usuario.id == current_user.id:
-        flash('No puedes eliminar tu propio usuario', 'danger')
-        return redirect(url_for('listar_usuarios'))
-    
-    db.session.delete(usuario)
-    db.session.commit()
-    flash(f'Usuario {usuario.username} eliminado', 'success')
-    return redirect(url_for('listar_usuarios'))
 
 
 # ===== RUTAS PARA REPORTES Y ESTADÍSTICAS =====

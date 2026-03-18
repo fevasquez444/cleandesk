@@ -56,11 +56,11 @@
                         </td>
                         <td>{{ usuario.fecha_registro.strftime('%d/%m/%Y') }}</td>
                         <td>
-                            <a href="{{ url_for('editar_usuario', id=usuario.id) }}" class="btn btn-sm btn-warning">
+                            <a href="{{ url_for('usuarios.editar_usuario', id=usuario.id) }}" class="btn btn-sm btn-warning">
                                 <i class="bi bi-pencil"></i>
                             </a>
                             {% if usuario.id != current_user.id %}
-                            <a href="{{ url_for('eliminar_usuario', id=usuario.id) }}" 
+                            <a href="{{ url_for('usuarios.eliminar_usuario', id=usuario.id) }}" 
                                class="btn btn-sm btn-danger"
                                onclick="return confirm('¿Eliminar usuario {{ usuario.username }}?')">
                                 <i class="bi bi-trash"></i>

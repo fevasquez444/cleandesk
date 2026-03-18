@@ -81,7 +81,7 @@
                                 {% if current_user.rol == 'admin' %}
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ url_for('listar_usuarios') }}">
+                                    <a class="dropdown-item" href="{{ url_for('usuarios.listar_usuarios') }}">
                                         <i class="bi bi-people-fill"></i> Admin: Usuarios
                                     </a>
                                 </li>
