@@ -2,6 +2,49 @@
 
 {% block title %}Reportes y Estadísticas{% endblock %}
 
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<<script>
+(function () {
+    const serviciosLabels = {{ servicios_populares | map(attribute='nombre') | list | tojson }};
+    const serviciosData = {{ servicios_populares | map(attribute='total') | list | tojson }};
+
+    const clientesLabels = {{ clientes_top | map(attribute='nombre') | list | tojson }};
+    const clientesData = {{ clientes_top | map(attribute='total_servicios') | list | tojson }};
+
+    const serviciosCanvas = document.getElementById('serviciosChart');
+
+    if (serviciosCanvas && serviciosLabels.length > 0) {
+        new Chart(serviciosCanvas, {
+            type: 'bar',
+            data: {
+                labels: serviciosLabels,
+                datasets: [{
+                    label: 'Cantidad de contrataciones',
+                    data: serviciosData
+                }]
+            }
+        });
+    }
+
+    const clientesCanvas = document.getElementById('clientesChart');
+
+    if (clientesCanvas && clientesLabels.length > 0) {
+        new Chart(clientesCanvas, {
+            type: 'bar',
+            data: {
+                labels: clientesLabels,
+                datasets: [{
+                    label: 'Servicios asignados',
+                    data: clientesData
+                }]
+            }
+        });
+    }
+})();
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="container mt-4">
     <h1 class="mb-4">
@@ -96,11 +139,39 @@
         </div>
     </div>
     
+        <!-- Gráficas -->
+    <div class="row mt-2">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-bar-chart"></i> Gráfica de servicios más contratados
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="serviciosChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-people"></i> Gráfica de clientes con más servicios
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="clientesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Botón para volver -->
     <div class="text-center mt-3">
         <a href="{{ url_for('index') }}" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Volver al Dashboard
         </a>
     </div>
-</div>
 {% endblock %}
