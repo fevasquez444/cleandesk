@@ -49,12 +49,12 @@
     
                     {% if current_user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('listar_clientes') }}">
+                            <a class="nav-link" href="{{ url_for('clientes.listar_clientes') }}">
                                 <i class="bi bi-people"></i> Clientes
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('listar_servicios') }}">
+                            <a class="nav-link" href="{{ url_for('servicios.listar_servicios') }}">
                                 <i class="bi bi-gear"></i> Servicios
                             </a>
                         </li>
@@ -64,7 +64,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('nuevo_cliente') }}">
+                            <a class="nav-link" href="{{ url_for('clientes.nuevo_cliente') }}">
                                 <i class="bi bi-person-plus"></i> Nuevo Cliente
                             </a>
                         </li>
@@ -74,7 +74,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <a class="dropdown-item" href="{{ url_for('perfil') }}">
+                                    <a class="dropdown-item" href="{{ url_for('auth.perfil') }}">
                                         <i class="bi bi-person"></i> Mi Perfil
                                     </a>
                                 </li>
@@ -88,7 +88,7 @@
                                 {% endif %}
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+                                    <a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
                                         <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
                                     </a>
                                 </li>
@@ -96,12 +96,12 @@
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">
+                            <a class="nav-link" href="{{ url_for('auth.login') }}">
                                 <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('registro') }}">
+                            <a class="nav-link" href="{{ url_for('auth.registro') }}">
                                 <i class="bi bi-person-plus"></i> Registrarse
                             </a>
                         </li>

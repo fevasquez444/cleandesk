@@ -120,16 +120,16 @@
                     </div>
                     <div class="card-body">
                         <div class="d-grid gap-2">
-                            <a href="{{ url_for('nuevo_cliente') }}" class="btn btn-outline-success">
+                            <a href="{{ url_for('clientes.nuevo_cliente') }}" class="btn btn-outline-success">
                                 <i class="bi bi-person-plus"></i> Registrar nuevo cliente
                             </a>
-                            <a href="{{ url_for('nuevo_servicio') }}" class="btn btn-outline-success">
+                            <a href="{{ url_for('servicios.nuevo_servicio') }}" class="btn btn-outline-success">
                                 <i class="bi bi-plus-circle"></i> Crear nuevo servicio
                             </a>
-                            <a href="{{ url_for('listar_clientes') }}" class="btn btn-outline-primary">
+                            <a href="{{ url_for('clientes.listar_clientes') }}" class="btn btn-outline-primary">
                                 <i class="bi bi-people"></i> Ver todos los clientes
                             </a>
-                            <a href="{{ url_for('listar_servicios') }}" class="btn btn-outline-primary">
+                            <a href="{{ url_for('servicios.listar_servicios') }}" class="btn btn-outline-primary">
                                 <i class="bi bi-gear"></i> Ver todos los servicios
                             </a>
                         </div>
@@ -150,10 +150,10 @@
                         <hr>
                         <p>Por favor, inicia sesión para acceder al sistema.</p>
                         <div class="d-grid gap-2 col-6 mx-auto">
-                            <a href="{{ url_for('login') }}" class="btn btn-success">
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-success">
                                 <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
                             </a>
-                            <a href="{{ url_for('registro') }}" class="btn btn-outline-success">
+                            <a href="{{ url_for('auth.registro') }}" class="btn btn-outline-success">
                                 <i class="bi bi-person-plus"></i> Registrarse
                             </a>
                         </div>
